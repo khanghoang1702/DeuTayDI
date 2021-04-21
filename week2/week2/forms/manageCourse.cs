@@ -20,31 +20,9 @@ namespace week2.forms
             InitializeComponent();
         }
         COURSE course = new COURSE();
-        private void searchBTN_Click(object sender, EventArgs e)
-        {
-            string label = searchTXT.Text;
-            courseList.DataSource = course.courseSearchLb(label);
-            labelTotal.Text = "Total Course: " + course.courseCountLb(label).ToString();
-        }
+        
 
-        private void findBtn_Click(object sender, EventArgs e)
-        {
-            int cID = Convert.ToInt32(textBoxCId.Text);
-            mydb.openConnection();
-
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Course WHERE courseID=@cID ", mydb.getConnection);
-            cmd.Parameters.Add("@cID", SqlDbType.VarChar).Value = cID;
-            SqlDataReader data = cmd.ExecuteReader();
-            while (data.Read())
-            {
-                textBoxLabel.Text = data.GetValue(1).ToString();
-                textBoxPeriod.Text = data.GetValue(2).ToString();
-                textBoxDesc.Text = data.GetValue(3).ToString();
-
-            }
-            mydb.closeConnection();
-        }
-
+      
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             COURSE course = new COURSE();
@@ -64,6 +42,7 @@ namespace week2.forms
                 if (course.insertCourse(cid, cLabel, cPed, cDesc))
                 {
                     MessageBox.Show("New Course Added", "Add Course", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    listboxCourse();
                 }
                 else
                 {
@@ -115,6 +94,35 @@ namespace week2.forms
             {
                 MessageBox.Show("Error", "Delete Course", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void listboxCourse()
+        {
+            lbCourse.DataSource = course.getAllCourse();
+            lbCourse.ValueMember = "courseID";
+            lbCourse.DisplayMember = "courseLabel";
+            lbCourse.SelectedItem = null;
+            labelTotal.Text=("Total course: " + course.courseCount());
+        }
+
+        private void manageCourse_Load(object sender, EventArgs e)
+        {
+            listboxCourse();
+        }
+        private void getCourse(int index)
+        {
+            DataRow dr = course.getAllCourse().Rows[index];
+            lbCourse.SelectedIndex = index;
+            textBoxCId.Text = dr.ItemArray[0].ToString();
+            textBoxLabel.Text = dr.ItemArray[1].ToString();
+            textBoxPeriod.Text = dr.ItemArray[2].ToString();
+            textBoxDesc.Text = dr.ItemArray[3].ToString();
+        }
+
+        private void lbCourse_Click(object sender, EventArgs e)
+        {
+            //DataRowView drv = (DataRowView)lbCourse.SelectedItem;
+            int pos = lbCourse.SelectedIndex;
+            getCourse(pos);
         }
     }
  }

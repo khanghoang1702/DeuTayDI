@@ -87,13 +87,10 @@ namespace week2.model
             mydb.closeConnection();
             return tbCourse;
         }
-        public double courseCountLb(string label)
+        public double courseCount()
         {
             mydb.openConnection();
-            SqlCommand cmd = new SqlCommand("Select count(*) from Course WHERE courseID=@cid or courseLabel=@clabel or coursePeriod=@cped ", mydb.getConnection);
-            cmd.Parameters.Add("@cid", SqlDbType.VarChar).Value = label;
-            cmd.Parameters.Add("@clabel", SqlDbType.VarChar).Value = label;
-            cmd.Parameters.Add("@cped", SqlDbType.VarChar).Value = label;
+            SqlCommand cmd = new SqlCommand("Select count(*) from Course", mydb.getConnection);
             int totalC = Convert.ToInt32(cmd.ExecuteScalar());
             return totalC;
         }
